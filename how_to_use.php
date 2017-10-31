@@ -25,7 +25,7 @@
 		$SQL->execute(array(time()+72000,'ConohaExpire')); #Conoha says token vaild for 24 hrs, here we use 20 hrs
 	}
 	
-	//Now, you are ready to use this class, the following shows how to use this class with 4 major HTTP methods:
+	//Now, you are ready to use this class, the following shows how to use this class:
 	//To see the output of each method, using var_dump($x);
 	//Then, your will get an array with 2 keys, where:
 	//$x[0] is the return HTTP code, eg: 200, 404, 409
