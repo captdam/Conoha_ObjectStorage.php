@@ -1,28 +1,15 @@
 <?php
-	//Ini
-	$os = new Conoha();
-	
 	//Setup the class, two ways, choose one:
-	//Basic way, apply a new token every time
-	//This way is simple, but not good for performance
-	$iniStatus = $this->objectStorage->ini('',0);
-	if ($iniStatus == false) { #Ini fail
-		header('HTTP/1.1 500 Internal Server Error');
-		echo 'Object storage server error.';
-		exit;
-	}
-	//If you use database to manage token, use this method:
-	//Assume you have a table with tow colums (key and value), each row save one variable
-	$iniStatus = $this->objectStorage->ini('Token',$this->site['ConohaExpire']);
-	if ($iniStatus == false) { #Ini fail
-		header('HTTP/1.1 500 Internal Server Error');
-		echo 'Object storage server error.';
-		exit;
-	}
-	else if ($iniStatus !== true) { #Token renewed
-		$SQL = $this->database->prepare('UPDATE SiteVariables SET `Value` = ? WHERE `Key` = ? LIMIT 1');
-		$SQL->execute(array($iniStatus,'ConohaToken'));
-		$SQL->execute(array(time()+72000,'ConohaExpire')); #Conoha says token vaild for 24 hrs, here we use 20 hrs
+	//1 - Basic way, apply a new token every time. This way is simple, but it takes time to request token everytime
+	$iniStatus = $this->objectStorage->ini('username','password','tenantid','',0);
+	//2 - If you use database to manage token, use this method
+	$token = $DB->getToken();
+	$expireTime = $DB->getexpireTime();
+	$oldToken = $token;
+	$iniStatus = $this->objectStorage->ini('username','password','tenantid',$token,$expireTime);
+	if ($token != $oldToken) { #Token is passed by reference, it will be changed if token expire
+		$DB->setToken($token);
+		$DB->setExpireTime($time()+72000); #Conoha says token vaild for 24 hrs, here we use 20 hrs
 	}
 	
 	//Now, you are ready to use this class, the following shows how to use this class:
