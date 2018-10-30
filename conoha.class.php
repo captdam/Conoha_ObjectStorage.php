@@ -47,7 +47,6 @@
 			//Token OK (not expired)
 			$this->token = $token;
 			$this->endpoint = 'https://object-storage.tyo1.conoha.io/v1/nc_'.$tenant.'/';
-			return true;
 			//Notice: as long as the token did not expire (24hrs), it is possible to have more than one active token
                 }
 
